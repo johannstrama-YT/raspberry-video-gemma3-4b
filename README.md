@@ -1,8 +1,8 @@
-# Raspberry Pi Private AI Server
+# Privater KI-Server auf dem Raspberry Pi
 
-**English** | [Deutsch](README.de.md)
+**Deutsch** | [English](README.en.md)
 
-`setup-ai-phone.sh` turns a Raspberry Pi into a private AI chat server you can reach from your phone or laptop.
+`setup-ai-phone.sh` verwandelt einen Raspberry Pi in einen privaten KI-Chat-Server, den du von deinem Handy oder Laptop aus erreichen kannst.
 
 ```
 Android / Laptop
@@ -14,87 +14,87 @@ Open WebUI   127.0.0.1:8080
 Ollama       127.0.0.1:11434
       │
       ▼
-Local LLMs (e.g. gemma3:4b)
+Lokale LLMs (z. B. gemma3:4b)
 ```
 
-Both Ollama and Open WebUI listen on localhost only. Remote access goes exclusively through Tailscale Serve, so no router port forwarding is needed.
+Ollama und Open WebUI lauschen nur auf localhost. Der Fernzugriff läuft ausschließlich über Tailscale Serve, es ist also keine Portweiterleitung im Router nötig.
 
-## Requirements
+## Voraussetzungen
 
-- A Raspberry Pi running Raspberry Pi OS / Debian (64-bit recommended) with internet access
-- A normal user account with `sudo` rights
-- At least 4 GB of free disk space (the script checks this)
-- [Ollama](https://ollama.com) already installed, ideally with a model pulled
-- A free [Tailscale](https://tailscale.com) account, with Tailscale also installed on your phone/laptop
+- Ein Raspberry Pi mit Raspberry Pi OS / Debian (64-Bit empfohlen) und Internetzugang
+- Ein normaler Benutzer mit `sudo`-Rechten
+- Mindestens 4 GB freier Speicherplatz (das Skript prüft das)
+- [Ollama](https://ollama.com) bereits installiert, am besten mit einem geladenen Modell
+- Ein kostenloses [Tailscale](https://tailscale.com)-Konto, Tailscale ist außerdem auf Handy/Laptop installiert
 
-## How to run
+## So wird es ausgeführt
 
-1. On a fresh Raspberry Pi OS, update the system and install the basics first:
+1. Auf einem frischen Raspberry Pi OS zuerst das System aktualisieren und die Grundlagen installieren:
 
    ```bash
    sudo apt update && sudo apt full-upgrade -y
    sudo apt install -y curl git ca-certificates zstd
    ```
 
-2. Install Ollama and pull a model (skip if already done):
+2. Ollama installieren und ein Modell laden (überspringen, falls schon erledigt):
 
    ```bash
    curl -fsSL https://ollama.com/install.sh | sh
    ollama pull gemma3:4b
    ```
 
-3. Get the script onto the Pi:
+3. Das Skript auf den Pi holen:
 
    ```bash
    git clone https://github.com/johannstrama-YT/raspberry-video-gemma3-4b.git
    cd raspberry-video-gemma3-4b
    ```
 
-4. Run it as your **normal user** (not with `sudo`; the script calls `sudo` itself where needed):
+4. Als **normaler Benutzer** ausführen (nicht mit `sudo`; das Skript ruft `sudo` selbst auf, wo nötig):
 
    ```bash
    ./setup-ai-phone.sh
    ```
 
-5. Follow the prompts:
-   - If Tailscale isn't logged in yet, open the printed URL on your phone/laptop and approve the Pi.
-   - The first time, you may need to open a second URL to approve Tailscale Serve/HTTPS. The script waits up to five minutes.
+5. Den Anweisungen folgen:
+   - Ist Tailscale noch nicht angemeldet, öffne die angezeigte URL auf Handy/Laptop und bestätige den Pi.
+   - Beim ersten Mal musst du eventuell eine zweite URL öffnen, um Tailscale Serve/HTTPS freizugeben. Das Skript wartet bis zu fünf Minuten.
 
-6. When it finishes, it prints your private HTTPS address (`https://<pi-name>.<tailnet>.ts.net`) and a QR code.
+6. Am Ende zeigt das Skript deine private HTTPS-Adresse (`https://<pi-name>.<tailnet>.ts.net`) und einen QR-Code an.
 
-## Using it from your phone
+## Nutzung vom Handy
 
-1. Install Tailscale on Android and sign in to the same tailnet.
-2. Scan the QR code (or open the URL) in your browser.
-3. Create the Open WebUI admin account on first visit, pick your Ollama model, and chat.
+1. Tailscale auf Android installieren und im selben Tailnet anmelden.
+2. Den QR-Code scannen (oder die URL im Browser öffnen).
+3. Beim ersten Besuch das Open-WebUI-Administratorkonto anlegen, dein Ollama-Modell auswählen und chatten.
 
-## What the script does
+## Was das Skript macht
 
-1. Installs `curl`, `ca-certificates`, `openssl`, `qrencode`
-2. Checks free disk space
-3. Checks that Ollama is installed
-4. Forces Ollama to listen on `127.0.0.1` only (systemd drop-in)
-5. Installs and connects Tailscale
-6. Installs `uv`
-7. Creates a Python 3.11 virtualenv for Open WebUI
-8. Installs Open WebUI (with retries for flaky downloads)
-9. Creates and starts an `open-webui` systemd service
-10. Publishes Open WebUI on your tailnet with `tailscale serve`
+1. Installiert `curl`, `ca-certificates`, `openssl`, `qrencode`
+2. Prüft den freien Speicherplatz
+3. Prüft, ob Ollama installiert ist
+4. Zwingt Ollama, nur auf `127.0.0.1` zu lauschen (systemd-Drop-in)
+5. Installiert Tailscale und verbindet es
+6. Installiert `uv`
+7. Erstellt eine Python-3.11-virtualenv für Open WebUI
+8. Installiert Open WebUI (mit Wiederholungsversuchen bei instabilen Downloads)
+9. Erstellt und startet einen systemd-Dienst `open-webui`
+10. Veröffentlicht Open WebUI in deinem Tailnet mit `tailscale serve`
 
-It is safe to re-run; it keeps your existing Open WebUI secret and data and upgrades Open WebUI.
+Das Skript kann gefahrlos erneut ausgeführt werden; es behält den vorhandenen Open-WebUI-Schlüssel und die Daten und aktualisiert Open WebUI.
 
-## Useful commands
+## Nützliche Befehle
 
 ```bash
-sudo systemctl status open-webui      # service status
-sudo journalctl -u open-webui -f      # Open WebUI logs
-sudo journalctl -u ollama -f          # Ollama logs
-ollama list                           # installed models
-ollama ps                             # loaded models
-sudo tailscale serve status           # show your private URL
-watch -n 1 'free -h; echo; ollama ps' # live memory/model monitor
+sudo systemctl status open-webui      # Dienststatus
+sudo journalctl -u open-webui -f      # Open-WebUI-Logs
+sudo journalctl -u ollama -f          # Ollama-Logs
+ollama list                           # installierte Modelle
+ollama ps                             # geladene Modelle
+sudo tailscale serve status           # private URL anzeigen
+watch -n 1 'free -h; echo; ollama ps' # Live-Überwachung von Speicher/Modell
 ```
 
-## Security
+## Sicherheit
 
-Do **not** enable Tailscale Funnel unless you deliberately want to expose Open WebUI to the public internet.
+Aktiviere **kein** Tailscale Funnel, es sei denn, du willst Open WebUI bewusst im öffentlichen Internet freigeben.
