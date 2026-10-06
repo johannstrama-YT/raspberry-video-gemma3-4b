@@ -1,5 +1,7 @@
 # Raspberry Pi Private AI Server
 
+**English** | [Deutsch](README.de.md)
+
 `setup-ai-phone.sh` turns a Raspberry Pi into a private AI chat server you can reach from your phone or laptop.
 
 ```
