@@ -27,31 +27,38 @@ Both Ollama and Open WebUI listen on localhost only. Remote access goes exclusiv
 
 ## How to run
 
-1. Install Ollama and pull a model (skip if already done):
+1. On a fresh Raspberry Pi OS, update the system and install the basics first:
+
+   ```bash
+   sudo apt update && sudo apt full-upgrade -y
+   sudo apt install -y curl git ca-certificates zstd
+   ```
+
+2. Install Ollama and pull a model (skip if already done):
 
    ```bash
    curl -fsSL https://ollama.com/install.sh | sh
    ollama pull gemma3:4b
    ```
 
-2. Get the script onto the Pi:
+3. Get the script onto the Pi:
 
    ```bash
    git clone https://github.com/johannstrama-YT/raspberry-video-gemma3-4b.git
    cd raspberry-video-gemma3-4b
    ```
 
-3. Run it as your **normal user** (not with `sudo`; the script calls `sudo` itself where needed):
+4. Run it as your **normal user** (not with `sudo`; the script calls `sudo` itself where needed):
 
    ```bash
    ./setup-ai-phone.sh
    ```
 
-4. Follow the prompts:
+5. Follow the prompts:
    - If Tailscale isn't logged in yet, open the printed URL on your phone/laptop and approve the Pi.
    - The first time, you may need to open a second URL to approve Tailscale Serve/HTTPS. The script waits up to five minutes.
 
-5. When it finishes, it prints your private HTTPS address (`https://<pi-name>.<tailnet>.ts.net`) and a QR code.
+6. When it finishes, it prints your private HTTPS address (`https://<pi-name>.<tailnet>.ts.net`) and a QR code.
 
 ## Using it from your phone
 
