@@ -27,6 +27,32 @@ Ollama und Open WebUI lauschen nur auf localhost. Der Fernzugriff läuft ausschl
 - [Ollama](https://ollama.com) bereits installiert, am besten mit einem geladenen Modell
 - Ein kostenloses [Tailscale](https://tailscale.com)-Konto, Tailscale ist außerdem auf Handy/Laptop installiert
 
+## Erstes Einrichten des Pi (Imager, SSH, Raspberry Pi Connect)
+
+1. **SD-Karte flashen** mit dem [Raspberry Pi Imager](https://www.raspberrypi.com/software/): Gerät und Raspberry Pi OS (64-Bit) wählen. Bei „OS-Anpassung" / „OS customisation" setzen:
+   - Hostname (z. B. `raspberrypi`), Benutzername und Passwort
+   - WLAN-Zugangsdaten und Land (falls kein LAN-Kabel)
+   - **SSH aktivieren** (Passwort oder öffentlicher Schlüssel)
+   - **Raspberry Pi Connect** aktivieren, falls deine Imager-Version die Option anbietet (sonst siehe Schritt 4)
+2. SD-Karte in den Pi stecken, Strom anschließen und 1–2 Minuten warten.
+3. **Erste SSH-Verbindung** vom Laptop im selben Netzwerk:
+
+   ```bash
+   ssh <benutzer>@<hostname>.local
+   ```
+
+   Falls `.local` nicht aufgelöst wird, nimm die IP-Adresse aus der Geräteliste deines Routers: `ssh <benutzer>@<ip-adresse>`. Die Frage nach dem Fingerabdruck mit `yes` bestätigen, danach das Passwort eingeben.
+4. **Raspberry Pi Connect** (falls nicht schon im Imager aktiviert) auf dem Pi einschalten und mit deinem Raspberry-Pi-Konto verbinden:
+
+   ```bash
+   sudo apt install -y rpi-connect-lite   # auf Raspberry Pi OS Lite; mit Desktop: rpi-connect
+   rpi-connect on
+   rpi-connect signin
+   ```
+
+   `rpi-connect signin` zeigt eine URL an. Öffne sie am Laptop/Handy, melde dich bei [connect.raspberrypi.com](https://connect.raspberrypi.com) an und bestätige das Gerät. Danach erscheint der Pi dort und lässt sich im Browser per Remote-Shell öffnen (Bildschirmfreigabe nur mit Desktop-Variante).
+5. **Zuerst nach dem Login** (siehe unten, „So wird es ausgeführt"): System aktualisieren, `curl`/`git` installieren, Ollama installieren, Repo klonen, Skript starten.
+
 ## So wird es ausgeführt
 
 1. Auf einem frischen Raspberry Pi OS zuerst das System aktualisieren und die Grundlagen installieren:

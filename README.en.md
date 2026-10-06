@@ -27,6 +27,32 @@ Both Ollama and Open WebUI listen on localhost only. Remote access goes exclusiv
 - [Ollama](https://ollama.com) already installed, ideally with a model pulled
 - A free [Tailscale](https://tailscale.com) account, with Tailscale also installed on your phone/laptop
 
+## First-time Pi setup (Imager, SSH, Raspberry Pi Connect)
+
+1. **Flash the SD card** with the [Raspberry Pi Imager](https://www.raspberrypi.com/software/): choose your device and Raspberry Pi OS (64-bit). Under "OS customisation" set:
+   - Hostname (e.g. `raspberrypi`), username and password
+   - Wi-Fi credentials and country (if not using Ethernet)
+   - **Enable SSH** (password or public key)
+   - **Enable Raspberry Pi Connect** if your Imager version offers it (otherwise see step 4)
+2. Put the SD card in the Pi, plug in power, and wait 1–2 minutes.
+3. **First SSH connection** from your laptop on the same network:
+
+   ```bash
+   ssh <user>@<hostname>.local
+   ```
+
+   If `.local` doesn't resolve, use the IP address from your router's device list: `ssh <user>@<ip-address>`. Answer `yes` to the fingerprint prompt, then enter the password.
+4. **Raspberry Pi Connect** (if not already enabled in the Imager): turn it on and link it to your Raspberry Pi account:
+
+   ```bash
+   sudo apt install -y rpi-connect-lite   # Raspberry Pi OS Lite; with desktop: rpi-connect
+   rpi-connect on
+   rpi-connect signin
+   ```
+
+   `rpi-connect signin` prints a URL. Open it on your laptop/phone, sign in at [connect.raspberrypi.com](https://connect.raspberrypi.com) and approve the device. The Pi then shows up there and you can open a remote shell in the browser (screen sharing only with the desktop version).
+5. **First things after logging in** (see "How to run" below): update the system, install `curl`/`git`, install Ollama, clone the repo, run the script.
+
 ## How to run
 
 1. On a fresh Raspberry Pi OS, update the system and install the basics first:
